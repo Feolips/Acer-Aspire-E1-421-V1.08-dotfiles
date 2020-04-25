@@ -1,0 +1,324 @@
+#                 Configurações para o SwayWM
+#           (Alterado por Felipe Vieira, @Feolips)
+#
+# Cole isso em ~/.config/sway/config e edite ao seu gosto.
+#
+# Leia `man 5 sway` para referência completa.
+
+### Variáveis
+#
+# Tecla "Super" (marca do Windows).Escreva Escreva `Mod1`  se quiser "Alt".
+set $mod Mod4
+# Home row direction keys, like vim
+set $left h
+set $down j
+set $up k
+set $right l
+# Seu terminal favorito
+# Ver x-terminal-emulator, alacritty e gnome-terminal
+set $term alacritty
+
+# Seu launcher favorito (recomenda-se que você passe o comando final ao SwayWM)
+set $menu dmenu_path | dmenu | xargs swaymsg exec --
+
+### Configurações de Saída (output)
+
+# #############Ajustes manuais para Dryelle (Acer Aspire E1-421-0868 ZQZ)
+
+# Papel de Parede (está OK)
+# Papel de parede padrão (mais resoluções disponíveis em `/usr/share/backgrounds/sway/`)
+ output * bg /usr/share/backgrounds/sway/Sway_Wallpaper_Blue_1366x768.png fill
+
+### Configurações de Entrada (input)
+#
+# Você encontra nomenclatura para seus inputs com `swaymsg -t get_inputs`
+# Leia `man 5 sway-input` para mais informações sobre.
+
+#	Touchpad (está OK)
+
+ input "2:7:SynPS/2_Synaptics_TouchPad" {
+	dwt enabled
+	tap enabled
+	natural_scroll enabled
+	middle_emulation enabled
+ }
+        
+#	TECLADO (está OK)
+
+ input "1:1:AT_Translated_Set_2_keyboard" {
+     xkb_layout br
+#    xkb_layout br(nodeadkeys)
+#    xkb_variant ,nodeadkeys
+#    xkb_options grp:alt_shift_toggle #Serve para alternar layouts
+    xkb_model acer_laptop
+}
+
+# Ajuste de entrada de vídeo:
+# Exemplo de configuração:
+#
+#   output HDMI-A-1 resolution 1920x1080 position 1920,0
+#
+# Você encontra nomenclatura para seus outputs com: `swaymsg -t get_outputs`
+
+# xWayland, pode ser enable, disable ou force (para carregar no boot, em máquinas lentas):
+xwayland force
+
+#Borda
+   bindsym $mod+b border toggle
+
+#   Modo de Espera
+#
+# Exemplo de configuração:
+#
+# exec swayidle -w \
+#          timeout 300 'swaylock -f -c 000000' \ # Para travar a tela
+#          timeout 600 'swaymsg "output * dpms off"' \ # Para desligar a tela
+#               resume 'swaymsg "output * dpms on"' \
+#          before-sleep 'swaylock -f -c 000000'
+#
+# Isso travará sua tela após 300 segundos de inatividade, e então desligará
+# a tela depois de mais 300 segundos, religando ao retornar.
+# Também travará sua tela antes do computador suspender.
+
+### Ajustes para modo de espera baseado no exemplo acima
+
+# exec swayidle -w \
+ #         timeout 300 'swaylock -f -c 000000' \
+  #        timeout 100 'swaymsg "output * dpms off"' \
+   #            resume 'swaymsg "output * dpms on"' \
+    #      before-sleep 'swaylock -f -c 000000'
+
+### Atalhos de teclado
+#
+# Básico:
+#
+    # Abrir um terminal
+    bindsym $mod+Return exec $term
+    bindsym $mod+t exec $term
+    bindsym Ctrl+Alt+t exec $term
+
+    # Fechar a janela em foco
+    bindsym $mod+q kill
+    bindsym Alt+F4 kill
+
+    # iniciar o launcher (dmenu entre outros)
+    bindsym $mod+d exec $menu
+
+    # Drag floating windows by holding down $mod and left mouse button.
+    # Resize them with right mouse button + $mod.
+    # Despite the name, also works for non-floating windows.
+    # Change normal to inverse to use left mouse button for resizing and right
+    # mouse button for dragging. (Roda do mouse?)
+    floating_modifier $mod normal
+    
+    # Aumentar e diminuir o som
+    bindsym XF86AudioRaiseVolume exec pactl set-sink-volume @DEFAULT_SINK@ +3%
+    bindsym XF86AudioLowerVolume exec pactl set-sink-volume @DEFAULT_SINK@ -3%
+    bindsym XF86AudioMute exec pactl set-sink-mute @DEFAULT_SOURCE@ toggle
+    
+    # Play/pause/stop/Fw/Fb
+    bindsym XF86AudioPlay exec playerctl play-pause
+    bindsym XF86AudioStop exec playerctl stop
+    bindsym XF86AudioNext exec playerctl next
+    bindsym XF86AudioPrev exec playerctl previous
+
+    # Aumentar e diminuir o brilho da tela
+    bindsym XF86MonBrightnessUp   exec brightnessctl set 5%+
+    bindsym XF86MonBrightnessDown exec brightnessctl set 5%-
+
+    # Recarregar o Sway
+    bindsym $mod+Shift+r reload
+
+    # Suspender
+    bindsym $mod+F4 exec systemctl suspend
+
+    # Sair do Sway (logoff da sessão Wayland)
+    bindsym $mod+Shift+e exec swaynag -t warning -m 'Super + Shift + E = Sair. Deseja retornar à tela de Login?' -b 'Sim, sair sem salvar nada' 'swaymsg exit'
+#
+# Movimentação:
+#
+    # Mover foco
+    bindsym $mod+$left focus left
+    bindsym $mod+$down focus down
+    bindsym $mod+$up focus up
+    bindsym $mod+$right focus right
+    # Ou use $mod+[up|down|left|right]
+    bindsym $mod+Left focus left
+    bindsym $mod+Down focus down
+    bindsym $mod+Up focus up
+    bindsym $mod+Right focus right
+
+    # Move the focused window with the same, but add Shift
+    bindsym $mod+Shift+$left move left
+    bindsym $mod+Shift+$down move down
+    bindsym $mod+Shift+$up move up
+    bindsym $mod+Shift+$right move right
+    # Ditto, with arrow keys
+    bindsym $mod+Shift+Left move left
+    bindsym $mod+Shift+Down move down
+    bindsym $mod+Shift+Up move up
+    bindsym $mod+Shift+Right move right
+#
+# Áreas de Trabalho:
+#
+    # Ir para X Área de Trabalho
+        bindsym $mod+1 workspace 1
+#    bindsym $mod+1 workspace 1: 
+    bindsym $mod+2 workspace 2
+    bindsym $mod+3 workspace 3
+    bindsym $mod+4 workspace 4
+    bindsym $mod+5 workspace 5
+    bindsym $mod+6 workspace 6
+    bindsym $mod+7 workspace 7
+    bindsym $mod+8 workspace 8: 🔊
+    bindsym $mod+9 workspace 9: 
+    bindsym $mod+0 workspace 10: 
+    bindsym $mod+m workspace Spotify 🤘🏻
+    bindsym $mod+n workspace 🎮 Steam
+    bindsym $mod+Control+1 workspace 11
+    bindsym $mod+Control+2 workspace 12
+    bindsym $mod+Control+3 workspace 13
+    bindsym $mod+Control+4 workspace 14
+    bindsym $mod+Control+5 workspace 15
+    bindsym $mod+Control+6 workspace 16
+    bindsym $mod+Control+7 workspace 17
+    bindsym $mod+Control+8 workspace 18
+    bindsym $mod+Control+9 workspace 19
+    bindsym $mod+Control+0 workspace 20
+
+    # Mover container em foco p/ Área de Trabalho
+    bindsym $mod+Shift+1 move container to workspace 1
+    bindsym $mod+Shift+2 move container to workspace 2
+    bindsym $mod+Shift+3 move container to workspace 3
+    bindsym $mod+Shift+4 move container to workspace 4
+    bindsym $mod+Shift+5 move container to workspace 5
+    bindsym $mod+Shift+6 move container to workspace 6
+    bindsym $mod+Shift+7 move container to workspace 7: 
+    bindsym $mod+Shift+8 move container to workspace 8: 🔊
+    bindsym $mod+Shift+9 move container to workspace 9: 
+    bindsym $mod+Shift+0 move container to workspace 10: 
+    bindsym $mod+Shift+Control+1 move container to workspace 11
+    bindsym $mod+Shift+Control+2 move container to workspace 12
+    bindsym $mod+Shift+Control+3 move container to workspace 13
+    bindsym $mod+Shift+Control+4 move container to workspace 14
+    bindsym $mod+Shift+Control+5 move container to workspace 15
+    bindsym $mod+Shift+Control+6 move container to workspace 16
+    bindsym $mod+Shift+Control+7 move container to workspace 17
+    bindsym $mod+Shift+Control+8 move container to workspace 18
+    bindsym $mod+Shift+Control+9 move container to workspace 19
+    bindsym $mod+Shift+Control+0 move container to workspace 20
+    bindsym $mod+Shift+m move container to workspace Spotify 🤘🏻
+    bindsym $mod+Shift+n move container to workspace 🎮 Steam
+    # Nota: Áreas de Trabalho podem ter o nome que você quiser, não apenas números.
+    
+    # Para abrir automaticamente uma aplicação em determinada Área de Trabalho, especifique a área seguida da aplicação:
+#    workspace 10
+#    exec firefox-wayland
+#   workspace Spotify 🤘🏻
+#    exec spotify
+
+# Evitar que aplicações abram em tela cheia:
+
+    # Dá pra capturar o AppID usando 'swaymsg -t get_tree | grep "aplicação" '
+    # Caso você esteja tentando evitar que a borda do Sway abra, use '; floating toggle' ao final da linha.  Isso vai fazer com que a janela surja em modo janela e alterne para tiling.
+    for_window [app_id="org.kde.digikam"] floating enable
+    for_window [title="xeyes"] floating enable
+    for_window [app_id="gedit"] floating enable ; floating toggle
+    for_window [app_id="nautilus"] floating enable ; floating toggle
+    
+    # Print Screen/Screenshot
+    bindsym Print      exec grim ~/Imagens/Screenshots/sc2.png
+    bindsym Ctrl+Print exec grim Tela.png
+#
+# Coisas de layout:
+#
+    # You can "split" the current object of your focus with
+    # $mod+b or $mod+v, for horizontal and vertical splits
+    # respectively.
+    bindsym $mod+b splith
+    bindsym $mod+v splitv
+
+    # Switch the current container between different layout styles
+    bindsym $mod+Alt+s layout stacking
+    bindsym $mod+Alt+w layout tabbed
+    bindsym $mod+Alt+e layout toggle split
+
+    # Make the current focus fullscreen
+    bindsym $mod+f fullscreen
+
+    # Alternar entre janela modo pilha e modo flutuante
+    bindsym $mod+space floating toggle
+
+    # Alternar foco entre janela fixa e janela flutuante
+    bindsym $mod+Tab focus mode_toggle
+    bindsym Alt+Tab  focus mode_toggle
+
+    # Mover/mudar foco para o contêiner pai
+    bindsym $mod+a focus parent
+    
+    #Chamar Nautilus
+    bindsym $mod+e exec nautilus border none
+
+#
+# Gaveta (Scratchpad):
+#
+    # Sway tem uma "gaveta", que é um lugar de guardar contêiners.
+    # Você pode enviar contêiners pra lá e recuperar depois.
+
+    # Mandar a janela atual pra gaveta:
+    bindsym $mod+Shift+minus move scratchpad
+
+    # Recuperar a próxima janela na gaveta, ou escondê-la
+    # Se houverem muitas janelas, esse comando ciclará entre elas.
+    bindsym $mod+minus scratchpad show
+#
+# Redimensionando os contêiners:
+#
+mode "👈🏻redimensionar👉🏻" {
+    # left will shrink the containers width
+    # right will grow the containers width
+    # up will shrink the containers height
+    # down will grow the containers height
+    bindsym $left resize shrink width 10px
+    bindsym $down resize grow height 10px
+    bindsym $up resize shrink height 10px
+    bindsym $right resize grow width 10px
+
+    # Ditto, with arrow keys
+    bindsym Left resize shrink width 10px
+    bindsym Down resize grow height 10px
+    bindsym Up resize shrink height 10px
+    bindsym Right resize grow width 10px
+
+    # Return to default mode
+    bindsym Return mode "default"
+    bindsym Escape mode "default"
+}
+bindsym $mod+r mode "👈🏻redimensionar👉🏻"
+
+#
+# SwayWM Bar - Status Bar:
+#
+# Leia `man 5 sway-bar` para mais informações sobre.
+bar {
+    #top ou bottom
+    position bottom 
+#    strip_workspace_name yes # Averiguar funcionamento
+
+    # Quando o `status_command` gera nova linha para `stdout`, swaybar atualiza.
+    # O default só mostra a data e a hora.
+    # l% para formato 12h; H% para formato 24h.
+    status_command while date +'%d/%m/%Y %H:%M:%S %p'; do sleep 1; done
+
+
+    # Ajustes dos itens da bandeja (em construção)
+#    tray_bindcode 1 ContextMenu
+
+    colors {
+        statusline #ffffff
+        background #323232
+        inactive_workspace #32323200 #32323200 #5c5c5c
+    }
+}
+
+include /etc/sway/config.d/*
